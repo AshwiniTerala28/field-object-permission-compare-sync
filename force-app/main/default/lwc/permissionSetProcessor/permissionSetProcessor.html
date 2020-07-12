@@ -1,0 +1,441 @@
+<template>
+    <div class="compare-filter slds-m-bottom_small">
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_6-of-12 slds">
+                <lightning-combobox name="permissionSet1" label="Permission Set 1" value={value}
+                    class="slds-p-around_small" placeholder="Select PermissionSet" options={permissionSetList}
+                    onchange={handlePermissionSetChange}>
+                </lightning-combobox>
+                <lightning-combobox name="permissionType1" label="Permission Type 1" value={value}
+                    class="slds-p-around_small" placeholder="Select Permission Type" options={permissionTypeList}
+                    onchange={handlePermissionTypeChange}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_6-of-12">
+                <lightning-combobox name="permissionSet2" label="Permission Set 2" value={value}
+                    class="slds-p-around_small" placeholder="Select PermissionSet" options={permissionSetList}
+                    onchange={handlePermissionSetChange}>
+                </lightning-combobox>
+                <lightning-combobox name="permissionType2" label="Permission Type 2" value={value}
+                    class="slds-p-around_small" placeholder="Select Permission Type" options={permissionTypeList}
+                    onchange={handlePermissionTypeChange}>
+                </lightning-combobox>
+            </div>
+        </div>
+
+    </div>
+
+    <template if:true={showProgessCounter}>
+        <lightning-progress-bar value={progressPercentage} size="large"></lightning-progress-bar>
+        <div class="slds-align_absolute-center">
+            {whatsInProgress} ({progressPercentage}% Complete)
+            <br />
+        </div>
+    </template>
+
+    <template if:true={showPageBackDrop}>
+        <div class="slds-backdrop slds-backdrop_open">
+        </div>
+    </template>
+
+    <div class="compare-grid">
+
+        <template if:false={comparisonExist}>
+            <div class="slds-text-heading_medium slds-align_absolute-center slds-p-around_x-large">Oh, nothing to
+                compare!. Please apply the above permission set and permission type.</div>
+        </template>
+
+        <div class="header-no-scroll-grid">
+
+            <div class="slds-grid slds-wrap">
+
+                <!--left header - start -->
+
+                <div class="slds-col slds-size_5-of-12">
+
+                    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center">
+
+                        <!--FieldPermission header - start -->
+
+                        <template if:true={isFieldPermission}>
+                            <template for:each={permissionHeader} for:item="header">
+                                <div key={header.name} class={header.size}>
+                                    <span class="header-span">
+                                        <template if:true={header.isKeyField}>
+                                            <lightning-input data-id="left-search-input"
+                                                placeholder={header.placeHolder} variant="label-hidden" type="search"
+                                                onkeyup={handleSearching} onchange={handleSearching}>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={header.isKeyField}>
+                                            {header.name}
+                                        </template>
+                                    </span>
+                                </div>
+                            </template>
+                        </template>
+
+                        <!--FieldPermission header - end -->
+
+                        <!--ObjectPermission header  - start -->
+
+                        <template if:true={isObjectPermission}>
+                            <template for:each={permissionHeader} for:item="header">
+                                <div key={header.name} class={header.size}>
+                                    <span class="header-span">
+                                        <template if:true={header.isKeyField}>
+                                            <lightning-input data-id="left-search-input"
+                                                placeholder={header.placeHolder} variant="label-hidden" type="search"
+                                                onkeyup={handleSearching} onchange={handleSearching}>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={header.isKeyField}>
+                                            {header.name}
+                                        </template>
+                                    </span>
+                                </div>
+                            </template>
+                        </template>
+
+                        <!--ObjectPermission header  - end -->
+
+                    </div>
+
+                </div>
+
+                <!--left header - end -->
+
+                <!--center action region - start-->
+
+                <div class="slds-col slds-size_2-of-12 slds-align_absolute-center">
+                    <template if:true={comparisonExist}>
+                        <span class="slds-badge selection-count-badge" lwc:dom="manual"></span>
+                        <button class="slds-button slds-button_brand slds-m-left_x-small custom-button-black-bg"
+                            onclick={handleSyncSelected}>
+                            Sync&nbsp;<lightning-icon icon-name="utility:sync" size="x-small" variant="inverse">
+                            </lightning-icon>&nbsp;Selected
+                        </button>
+                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click" data-id="dropdownAction">
+                            <button onclick={toggleDropDown}
+                                class="slds-button slds-button_icon slds-button_icon-border-filled custom-button-black-bg"
+                                aria-haspopup="true" title="Show More">
+                                <lightning-icon icon-name="utility:threedots_vertical" size="x-small" variant="inverse">
+                                </lightning-icon>
+                                <span class="slds-assistive-text">Show More</span>
+                            </button>
+                            <div class="slds-dropdown slds-dropdown_bottom dropdown-border">
+                                <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                                    <li class="slds-dropdown__item" role="presentation"
+                                        onclick={handleToggleShowSelected}>
+                                        <a href="javascript:void(0);" role="menuitem" tabindex="0"
+                                            class="slds-m-horizontal_x-small slds-m-vertical_xx-small custom-menu-button-black">
+                                            <span class="slds-truncate slds-align_absolute-center"
+                                                title={toggleShowSelectedBtnText}>
+                                                {toggleShowSelectedBtnText}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="slds-dropdown__item" role="presentation" onclick={handleSyncAllLeft}>
+                                        <a href="javascript:void(0);" role="menuitem" tabindex="0"
+                                            class="slds-m-horizontal_x-small slds-m-vertical_xx-small custom-menu-button-black">
+                                            <span class="slds-truncate slds-align_absolute-center"
+                                                title={toggleAllLeftSyncBtnText}>
+                                                {toggleAllLeftSyncBtnText}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="slds-dropdown__item" role="presentation" onclick={handleSyncAllRight}>
+                                        <a href="javascript:void(0);" role="menuitem" tabindex="0"
+                                            class="slds-m-horizontal_x-small slds-m-vertical_xx-small custom-menu-button-black">
+                                            <span class="slds-truncate slds-align_absolute-center"
+                                                title={toggleAllRightSyncBtnText}>
+                                                {toggleAllRightSyncBtnText}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="slds-dropdown__item" role="presentation" >
+
+                                        <fieldset class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-radio_button-group slds-align_absolute-center switch-toggle-diff-both-match">
+                                                    <template for:each={diffBothMatchOptions} for:item="option">
+                                                        <span key={option.value} class="slds-button slds-radio_button">
+                                                            <input type="radio" name={option.groupName} value={option.value} 
+                                                               class="radio-diff-both-match" onchange={handleDiffBothMatchChange} />
+                                                            <label class="slds-radio_button__label" onclick={handleDiffBothMatchFocus}>
+                                                                <span class="slds-radio_faux">    
+                                                                    {option.value}                                                            
+                                                                </span>
+                                                            </label>
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!--center action region - end-->
+
+                <!--right header - start -->
+
+                <div class="slds-col slds-size_5-of-12">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center">
+
+                        <!--FieldPermission header - start -->
+
+                        <template if:true={isFieldPermission}>
+                            <template for:each={permissionHeader} for:item="header">
+                                <div key={header.name} class={header.size}>
+                                    <span class="header-span">
+                                        {header.name}
+                                    </span>
+                                </div>
+                            </template>
+                        </template>
+
+                        <!--FieldPermission header - end -->
+
+                        <!--ObjectPermission header  - start -->
+
+                        <template if:true={isObjectPermission}>
+                            <template for:each={permissionHeader} for:item="header">
+                                <div key={header.name} class={header.size}>
+                                    <span class="header-span">
+                                        {header.name}
+                                    </span>
+                                </div>
+                            </template>
+                        </template>
+
+                        <!--ObjectPermission header  - end -->
+
+                    </div>
+                </div>
+
+                <!--right header - end -->
+
+            </div>
+
+        </div>
+
+        <div class="scrolling-grid">
+
+            <div class="slds-grid slds-wrap">
+
+                <!--left  - start -->
+
+                <div class="slds-col slds-size_5-of-12">
+
+                    <!--FieldPermission  - start -->
+                    <template if:true={isFieldPermission}>
+                        <template for:each={permissionSet1JSON} for:item="row">
+                            <div key={row.Field} data-target-type="row" data-row-id={row.Field} class={row.rowClass}>
+                                <div class="slds-col slds-size_8-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.Field}</span>
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsRead}</span>
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsEdit}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <!--FieldPermission  - end -->
+
+                    <!--ObjectPermission  - start -->
+                    <template if:true={isObjectPermission}>
+                        <template for:each={permissionSet1JSON} for:item="row">
+                            <div key={row.SobjectType} class={row.rowClass}>
+                                <div class="slds-col slds-size_6-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.SobjectType}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsCreate}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsRead}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsEdit}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsDelete}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsViewAllRecords}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsModifyAllRecords}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <!--ObjectPermission  - end -->
+
+                </div>
+
+                <!--left - end -->
+
+                <!--center action region - start-->
+
+                <div class="slds-col slds-size_2-of-12">
+
+                    <template if:true={comparisonExist}>
+                        <template for:each={permissionSetActionJSON} for:item="action">
+                            <div key={action.key} class={action.rowClass} data-target-type="row"
+                                data-row-id={action.key}>
+                                <div class="slds-col slds-size_12-of-12 slds-align_absolute-center action-column">
+                                    <span class={action.class}>
+
+                                        <fieldset class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-radio_button-group switch-toggle">
+                                                    <!-- {action.disableLeftSync}-{action.disableRightSync} -->
+                                                    <template for:each={action.actionOptions} for:item="option">
+                                                        <span key={option.value} class="slds-button slds-radio_button">
+                                                            <!-- {option.disabled} -->
+                                                            <template if:false={option.disabled}>
+                                                                <input type="radio" name={action.key}
+                                                                    value={option.value} checked={option.checked}
+                                                                    onchange={handleActionRadioGroupChange} />
+                                                                <label class="slds-radio_button__label"
+                                                                    onclick={handleRadioFocus}>
+                                                                    <span class="slds-radio_faux">
+                                                                        <lightning-icon icon-name={option.iconName}
+                                                                            size="x-small"
+                                                                            class="radio-group-faux-icon">
+                                                                        </lightning-icon>
+                                                                    </span>
+                                                                </label>
+                                                            </template>
+                                                            <!--no input radio label for disabled options - start -->
+                                                            <template if:true={option.disabled}>
+                                                                <label class="slds-radio_button__label disabled">
+                                                                    <span class="slds-radio_faux">
+                                                                        <lightning-icon icon-name={option.iconName}
+                                                                            size="x-small"
+                                                                            class="radio-group-faux-icon">
+                                                                        </lightning-icon>
+                                                                    </span>
+                                                                </label>
+                                                            </template>
+                                                            <!--no input radio label for disabled options - end -->
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                    </span>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+
+                </div>
+
+                <!--center action region - end-->
+
+                <!--right - start -->
+
+                <div class="slds-col slds-size_5-of-12">
+
+                    <!--FieldPermission  - start -->
+                    <template if:true={isFieldPermission}>
+                        <template for:each={permissionSet2JSON} for:item="row">
+                            <div key={row.Field} data-target-type="row" data-row-id={row.Field} class={row.rowClass}>
+                                <div class="slds-col slds-size_8-of-12 data-cell-padding ">
+                                    <span class={row.class}>{row.Field}</span>
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsRead}</span>
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsEdit}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <!--FieldPermission  - end -->
+
+                    <!--ObjectPermission  - start -->
+                    <template if:true={isObjectPermission}>
+                        <template for:each={permissionSet2JSON} for:item="row">
+                            <div key={row.SobjectType} class={row.rowClass}>
+                                <div class="slds-col slds-size_6-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.SobjectType}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsCreate}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsRead}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsEdit}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsDelete}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsViewAllRecords}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12 data-cell-padding">
+                                    <span class={row.class}>{row.PermissionsModifyAllRecords}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <!--ObjectPermission  - end -->
+
+                </div>
+
+                <!--right - end -->
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <template if:true={showResultModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <!--Close Button-->
+                    <button class="slds-button slds-button_icon slds-button_icon-inverse slds-float--right"
+                        title="Close" onclick={closeResultModal}>
+                        <lightning-icon icon-name="utility:close" size="small">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <!--Close Button-->
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">There you have it!</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_large" id="modal-content-id-1">
+                    <template for:each={resultArray} for:item="mapKey">
+                        <h1 key={mapKey.key}>{mapKey.key}</h1><br key={mapKey.key} />
+                        <lightning-formatted-rich-text key={mapKey.key} value={mapKey.value}>
+                        </lightning-formatted-rich-text>
+                    </template>
+                </div>
+                <!--<footer class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral">Cancel</button>
+                <button class="slds-button slds-button_brand">Save</button>
+              </footer>-->
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

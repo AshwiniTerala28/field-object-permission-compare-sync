@@ -1,0 +1,180 @@
+.compare-filter{
+    border: silver .1px solid !important;
+    padding: 3px 3px 3px 3px !important;
+    border-radius: .2em;
+    /* background-color: rgb(85, 184, 197) !important; */
+    background-color: #F3F2F2;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);    
+}
+
+.compare-grid{
+    border: silver .1px solid !important;
+    padding: 3px 3px 3px 3px !important;
+    border-radius: .2em;
+    /* background-color: rgb(85, 184, 197) !important; */
+    background-color: #F3F2F2;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);
+    min-width: 1310px !important;
+}
+
+.header-no-scroll-grid{
+    width: calc( 100% - 1.1em );
+    /* background-color: rgb(85, 184, 197) !important; */    
+    background-color: #F3F2F2;    
+}
+
+.scrolling-grid{
+    max-height: 300px !important;
+    overflow-y: scroll;
+    background-color: white !important;
+}
+
+.header-cell-border-padding{
+    /*border: silver .1px solid !important;*/
+    padding: 3px 3px 3px 3px !important;   
+}
+
+.data-cell-padding{
+    padding: 3px 3px 3px 3px !important;
+    word-break: break-all;
+    vertical-align: middle !important;
+    align-items: center;
+}
+
+.header-span{
+    display: block !important;
+    min-height: 50px !important;
+    padding: 5px 5px 5px 5px !important;
+    font-weight: 600;
+    align-items: center;
+    /* background-color: rgb(85, 184, 197) !important; */
+    background-color: #F3F2F2;    
+}
+
+.green{
+    display: block !important;
+    min-height: 50px !important;
+    padding: 3px 3px 3px 3px !important;
+    /* background-color: rgb(189, 212, 189) !important; */
+    background-color: rgb(216, 224, 216);
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+}
+
+.red{
+    display: block !important;
+    min-height: 50px !important;
+    padding: 2px 2px 2px 2px !important;
+    /* background-color: rgb(218, 184, 184)  !important; */
+    background-color: rgb(236, 226, 226);
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+}
+
+.green:hover{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);    
+}
+
+.red:hover{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);    
+}
+
+.action-column{
+    padding: 3px 3px 3px 3px !important;
+    vertical-align: middle !important;
+    align-items: center;
+}
+
+.action-column .hide{
+    visibility: hidden !important;
+    min-height: 50px !important;
+    padding: 3px 3px 3px 3px !important;
+}
+
+.action-column .show{
+    background-color: white !important;
+    display: block !important;
+    min-height: 50px !important;
+    padding: 3px 3px 3px 3px !important;
+    margin-left: 20px !important;
+}
+
+.slds-radio_button [type=radio]:checked+.slds-radio_button__label{
+    background-color: #000000;
+    background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
+}
+
+.disabled{
+    background-color: silver !important;
+    opacity: .1 !important;
+}
+
+.custom-button-black-bg{
+    background-color: #000000;
+    background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
+    font-weight: 500;
+}
+
+.custom-menu-button-black{
+    font-family: Salesforce Sans,Arial,sans-serif;
+    background-color: #000000;
+    background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
+    border-radius: .2em;
+    color: white !important;    
+    min-width: 155px !important;
+    font-weight: 500;
+}
+
+.custom-menu-button-black:hover{
+    font-family: Salesforce Sans,Arial,sans-serif;
+    background-color: #000000;
+    background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
+    border-radius: .2em;
+    color: white !important;  
+    min-width: 155px !important;  
+    font-weight: 500;
+}
+
+.custom-menu-button-black:focus{
+    font-family: Salesforce Sans,Arial,sans-serif;
+    background-color: #000000;
+    background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
+    border-radius: .2em;
+    color: white !important;    
+    min-width: 155px !important;
+    font-weight: 500;
+}
+
+.unselected-hide-row{
+    display: none !important;
+}
+
+.search-filtered-hide-row{
+    display: none !important;
+}
+
+.diff-hide-row{
+    display: none !important;
+}
+
+.match-hide-row{
+    display: none !important;
+}
+
+.selection-count-badge{
+    margin-right: -15px;
+    margin-top: -30px;
+    border-style: solid;
+    background-color: white;
+    color: black;
+    border-color: black;
+    z-index: 1;
+}
+
+.dropdown-border{
+    border: black solid .75px;
+}
+
+.switch-toggle-diff-both-match
+{
+    margin-left: 9px;
+    margin-right: 9px;
+}
