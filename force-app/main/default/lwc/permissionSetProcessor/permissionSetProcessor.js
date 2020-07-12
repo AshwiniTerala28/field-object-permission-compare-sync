@@ -635,6 +635,7 @@ export default class PermissionSetProcessor extends LightningElement {
             this.searchTimer = setTimeout(() => {
                 var start = performance.now();
                 this.searchByKey();
+                this.toggleLeftRightToSelectApplicable();
                 var end = performance.now();
                 var timeTaken = end - start;
                 console.log('It took ' + timeTaken + ' for searching "' + searchText + '" on the 3 permissions JSON of each sized ' + this.permissionSetActionJSON.length + ' and adding actions back by checking the insert and update map of sizes: ' + this.permissionInsertMap.size + ' & ' + this.permissionUpdateMap.size);
@@ -711,7 +712,18 @@ export default class PermissionSetProcessor extends LightningElement {
         }
         this.searchTimer = setTimeout(() => {
             var start = performance.now();
-            let keyField = '';
+            this.toggleShowAllOrSelected();
+            this.toggleLeftRightToSelectApplicable();
+            this.searchTimer = null;
+            var end = performance.now();
+            var timeTaken = end - start;
+            console.log('It took ' + timeTaken + ' for toggleing to show selected on the 3 permissions JSON of each sized ' + this.permissionSetActionJSON.length + ' and adding actions back by checking the insert and update map of sizes: ' + this.permissionInsertMap.size + ' & ' + this.permissionUpdateMap.size);
+            this.searchByKey();
+        }, TIMER_DELAY);
+    }
+
+    toggleShowAllOrSelected(){
+        let keyField = '';
             if (this.selectedPermissionType1 === FIELD_PERMISSIONS) {
                 keyField = FIELD_PERMISSION_KEY_FIELD;
             }
@@ -781,30 +793,38 @@ export default class PermissionSetProcessor extends LightningElement {
                 this.toggleShowSelectedBtnText = 'Show All';
             } else if (this.toggleShowSelectedBtnText === 'Show All') {
                 this.toggleShowSelectedBtnText = 'Show Only Selected';
-            }
-            this.searchTimer = null;
-            var end = performance.now();
-            var timeTaken = end - start;
-            console.log('It took ' + timeTaken + ' for toggleing to show selected on the 3 permissions JSON of each sized ' + this.permissionSetActionJSON.length + ' and adding actions back by checking the insert and update map of sizes: ' + this.permissionInsertMap.size + ' & ' + this.permissionUpdateMap.size);
-            this.searchByKey();
-        }, TIMER_DELAY);
+            }            
+    }
+
+    toggleToShowAll(){
+        if (this.toggleShowSelectedBtnText === 'Show All') {
+            this.toggleShowAllOrSelected();
+        }
     }
     
     handleSyncAllLeft(event) {
         for (let i = 0; i < this.permissionSetActionJSON.length; i++) {
             if (this.toggleAllLeftSyncBtnText === 'Select Applicable to Left') {
-                if (this.permissionSetActionJSON[i].disableLeftSync === false && this.permissionSetActionJSON[i].class.indexOf('hide')===-1) {
+                if (this.permissionSetActionJSON[i].disableLeftSync === false 
+                    && this.permissionSetActionJSON[i].class.indexOf('hide')===-1
+                    && this.permissionSetActionJSON[i].rowClass.indexOf('hide-row') === -1
+                    ) {
                     this.deleteInsertAndUpdateRecord(this.permissionSetActionJSON[i].key);
                     this.loadInsertOrUpdateRecord(this.permissionSetActionJSON[i].key, this.permissionSetActionJSON[i].objForSyncingToLeft);
                     this.permissionSetActionJSON[i].actionOptions[0].checked = true;
                     this.permissionSetActionJSON[i].actionOptions[1].checked = false;
                     this.permissionSetActionJSON[i].actionOptions[2].checked = false;
                 }
-            } else if (this.toggleAllLeftSyncBtnText === 'Unselect Left Selections' && this.permissionSetActionJSON[i].class.indexOf('hide')===-1) {
+            } else if (this.toggleAllLeftSyncBtnText === 'Unselect Left Selections' 
+                && this.permissionSetActionJSON[i].class.indexOf('hide')===-1
+                && this.permissionSetActionJSON[i].rowClass.indexOf('hide-row') === -1
+                ) {
                 this.deleteInsertAndUpdateRecord(this.permissionSetActionJSON[i].key);
                 this.permissionSetActionJSON[i].actionOptions[0].checked = false;
                 this.permissionSetActionJSON[i].actionOptions[1].checked = true;
                 this.permissionSetActionJSON[i].actionOptions[2].checked = false;
+                //if Show Only Selected then toggle it to Show All
+                this.toggleToShowAll();
             }            
         }
 
@@ -820,18 +840,26 @@ export default class PermissionSetProcessor extends LightningElement {
     handleSyncAllRight(event) {
         for (let i = 0; i < this.permissionSetActionJSON.length; i++) {
             if (this.toggleAllRightSyncBtnText === 'Select Applicable to Right') {
-                if (this.permissionSetActionJSON[i].disableRightSync === false && this.permissionSetActionJSON[i].class.indexOf('hide')===-1) {
+                if (this.permissionSetActionJSON[i].disableRightSync === false 
+                    && this.permissionSetActionJSON[i].class.indexOf('hide')===-1
+                    && this.permissionSetActionJSON[i].rowClass.indexOf('hide-row') === -1
+                    ) {
                     this.deleteInsertAndUpdateRecord(this.permissionSetActionJSON[i].key);
                     this.loadInsertOrUpdateRecord(this.permissionSetActionJSON[i].key, this.permissionSetActionJSON[i].objForSyncingToRight);
                     this.permissionSetActionJSON[i].actionOptions[0].checked = false;
                     this.permissionSetActionJSON[i].actionOptions[1].checked = false;
                     this.permissionSetActionJSON[i].actionOptions[2].checked = true;
                 }
-            } else if (this.toggleAllRightSyncBtnText === 'Unselect Right Selections' && this.permissionSetActionJSON[i].class.indexOf('hide')===-1) {
+            } else if (this.toggleAllRightSyncBtnText === 'Unselect Right Selections' 
+                && this.permissionSetActionJSON[i].class.indexOf('hide')===-1
+                && this.permissionSetActionJSON[i].rowClass.indexOf('hide-row') === -1                
+                ) {
                 this.deleteInsertAndUpdateRecord(this.permissionSetActionJSON[i].key);
                 this.permissionSetActionJSON[i].actionOptions[0].checked = false;
                 this.permissionSetActionJSON[i].actionOptions[1].checked = true;
                 this.permissionSetActionJSON[i].actionOptions[2].checked = false;
+                //if Show Only Selected then toggle it to Show All
+                this.toggleToShowAll();
             }
         }
 
@@ -842,6 +870,17 @@ export default class PermissionSetProcessor extends LightningElement {
         }
 
         this.updateSelectionCountBadge();
+    }
+
+    toggleLeftRightToSelectApplicable(){
+        //left
+        if (this.toggleAllLeftSyncBtnText === 'Unselect Left Selections') {
+            this.toggleAllLeftSyncBtnText = 'Select Applicable to Left';
+        }
+        //right
+        if (this.toggleAllRightSyncBtnText === 'Unselect Right Selections') {
+            this.toggleAllRightSyncBtnText = 'Select Applicable to Right';
+        }
     }
 
     handleDiffBothMatchFocus(event){

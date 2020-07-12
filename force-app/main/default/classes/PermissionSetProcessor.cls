@@ -18,13 +18,13 @@ public with sharing class PermissionSetProcessor{
 	public static list<option> getPermissionSetOptions(){
         list<option> options = new list<option>();
         List<PermissionSet> permissionSetList = new List<PermissionSet>();
-        permissionSetList = [select id, Label, ProfileId, Profile.Name from PermissionSet];
+        permissionSetList = [select id, Label, ProfileId, Profile.Name from PermissionSet Order By Label, Profile.Name];
         for(PermissionSet ps: permissionSetList){
             option item = new option();
             if(string.isNotBlank(ps.Profile.Name)){
-                item.label = ps.Profile.Name;
+                item.label = 'Profile: ' + ps.Profile.Name;
             }else{
-                item.label = ps.label;
+                item.label = 'PermissionSet: ' + ps.label;
             }            
             item.value = ps.id;
             options.add(item);

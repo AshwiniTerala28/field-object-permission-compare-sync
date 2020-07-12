@@ -14,26 +14,27 @@ public with sharing class PermissionSetProcessorTest {
                 list<PermissionSetProcessor.option> options = new list<PermissionSetProcessor.option>();
                 options = PermissionSetProcessor.getPermissionSetOptions();
                 system.assert(options.size()>0, 'Atleast one profile or permission exist in the org');
+                Id systemAdminPermissionSetId = [select id, Label, ProfileId, Profile.Name from PermissionSet where Profile.Name = 'System Administrator' limit 1].Id;
                 List<sObject> fieldPermissions = new List<sObject>();
-                fieldPermissions = PermissionSetProcessor.getPermisssionMap(options[0].value, 'FIELD_PERMISSIONS');
+                fieldPermissions = PermissionSetProcessor.getPermisssionMap(systemAdminPermissionSetId, 'FIELD_PERMISSIONS');
                 system.assert(fieldPermissions.size()>0, 'Atleast one field permission exist for system admin');
                 //Contact.Account permission if exist
                 List<sObject> permisssions = new List<sObject>();     
-                permisssions = [select Id from FieldPermissions where ParentId = :options[0].value and Field = 'Contact.Account' limit 1];
+                permisssions = [select Id from FieldPermissions where ParentId = :systemAdminPermissionSetId and Field = 'Contact.Account' limit 1];
                 if(!permisssions.isEmpty()){
                     delete permisssions;
                 }
                 Map<string, string> data = new Map<string, string>();
-                data.put('INSERT|FIELD_PERMISSIONS', '[{"Field": "Contact.Account", "SobjectType": "Contact", "PermissionsRead": true, "PermissionsEdit": false, "ParentId": "'+options[0].value+'"}]');
+                data.put('INSERT|FIELD_PERMISSIONS', '[{"Field": "Contact.Account", "SobjectType": "Contact", "PermissionsRead": true, "PermissionsEdit": false, "ParentId": "'+systemAdminPermissionSetId+'"}]');
                 Map<String,String> dmls = new Map<String,String>();
                 dmls = PermissionSetProcessor.dmlPermissions(data);
-                permisssions = [select Id from FieldPermissions where ParentId = :options[0].value and Field = 'Contact.Account' limit 1];
+                permisssions = [select Id from FieldPermissions where ParentId = :systemAdminPermissionSetId and Field = 'Contact.Account' limit 1];
                 system.assert(permisssions.size()>0, 'Contact.Account Field permission exist');
                 data = new Map<string, string>();
-                data.put('UPDATE|FIELD_PERMISSIONS', '[{"Field": "Contact.Account", "SobjectType": "Contact", "PermissionsRead": true, "PermissionsEdit": true, "ParentId": "'+options[0].value+'", "Id": "'+permisssions[0].id+'"}]');
+                data.put('UPDATE|FIELD_PERMISSIONS', '[{"Field": "Contact.Account", "SobjectType": "Contact", "PermissionsRead": true, "PermissionsEdit": true, "ParentId": "'+systemAdminPermissionSetId+'", "Id": "'+permisssions[0].id+'"}]');
                 dmls = PermissionSetProcessor.dmlPermissions(data);             
                 List<FieldPermissions> FieldPerm = new List<FieldPermissions>();
-                FieldPerm = [select Id, PermissionsEdit from FieldPermissions where ParentId = :options[0].value and Field = 'Contact.Account' limit 1];
+                FieldPerm = [select Id, PermissionsEdit from FieldPermissions where ParentId = :systemAdminPermissionSetId and Field = 'Contact.Account' limit 1];
                 system.assert(FieldPerm.size()>0, 'Updated Contact.Account Field PermissionsRead permission to false');                   
             }
         test.stopTest();        
@@ -52,24 +53,28 @@ public with sharing class PermissionSetProcessorTest {
                 list<PermissionSetProcessor.option> options = new list<PermissionSetProcessor.option>();
                 options = PermissionSetProcessor.getPermissionSetOptions();
                 system.assert(options.size()>0, 'Atleast one profile or permission exist in the org');
-                List<sObject> objectPermissions = new List<sObject>();
-                objectPermissions = PermissionSetProcessor.getPermisssionMap(options[0].value, 'OBJECT_PERMISSIONS');
-                system.assert(objectPermissions.size()>0, 'Atleast one object permission exist for system admin');
                 Id systemAdminPermissionSetId = [select id, Label, ProfileId, Profile.Name from PermissionSet where Profile.Name = 'System Administrator' limit 1].Id;
+                List<sObject> objectPermissions = new List<sObject>();
+                objectPermissions = PermissionSetProcessor.getPermisssionMap(systemAdminPermissionSetId, 'OBJECT_PERMISSIONS');
+                system.assert(objectPermissions.size()>0, 'Atleast one object permission exist for system admin');
                 //Lead permission if exist
                 List<sObject> permisssions = new List<sObject>();     
                 permisssions = [select id from ObjectPermissions where ParentId = :systemAdminPermissionSetId and SobjectType = 'Lead' limit 1];
                 Map<string, string> data = new Map<string, string>();
-                data.put('INSERT|OBJECT_PERMISSIONS', '[{"SobjectType": "Lead", "PermissionsCreate": false, "PermissionsRead": true, "PermissionsEdit": false, "PermissionsDelete": false, "PermissionsViewAllRecords": false, "PermissionsModifyAllRecords": false, "ParentId": "'+options[0].value+'"}]');
+                data.put('INSERT|OBJECT_PERMISSIONS', '[{"SobjectType": "Lead", "PermissionsCreate": false, "PermissionsRead": true, "PermissionsEdit": false, "PermissionsDelete": false, "PermissionsViewAllRecords": false, "PermissionsModifyAllRecords": false, "ParentId": "'+systemAdminPermissionSetId+'"}]');
                 Map<String,String> dmls = new Map<String,String>();
                 dmls = PermissionSetProcessor.dmlPermissions(data);
-                permisssions = [select id from ObjectPermissions where ParentId = :options[0].value and SobjectType = 'Lead' limit 1];
+                permisssions = [select id from ObjectPermissions where ParentId = :systemAdminPermissionSetId and SobjectType = 'Lead' limit 1];
                 system.assert(permisssions.size()>0, 'Lead object permission exist');
                 data = new Map<string, string>();
-                data.put('UPDATE|OBJECT_PERMISSIONS', '[{"SobjectType": "Lead", "PermissionsCreate": true, "PermissionsRead": true, "PermissionsEdit": false, "PermissionsDelete": false, "PermissionsViewAllRecords": false, "PermissionsModifyAllRecords": false, "ParentId": "'+options[0].value+'", "Id": "'+permisssions[0].id+'"}]');
+                data.put('UPDATE|OBJECT_PERMISSIONS', '[{"SobjectType": "Lead", "PermissionsCreate": true, "PermissionsRead": true, "PermissionsEdit": false, "PermissionsDelete": false, "PermissionsViewAllRecords": false, "PermissionsModifyAllRecords": false, "ParentId": "'+systemAdminPermissionSetId+'", "Id": "'+permisssions[0].id+'"}]');
                 dmls = PermissionSetProcessor.dmlPermissions(data);     
+                //for trigering error results
+                dmls = PermissionSetProcessor.dmlPermissions(data);     
+                //for trigering exception catch
+                dmls = PermissionSetProcessor.dmlPermissions(null);     
                 List<ObjectPermissions> objPermisssions = new List<ObjectPermissions>();     
-                objPermisssions = [select id, PermissionsCreate from ObjectPermissions where ParentId = :options[0].value and SobjectType = 'Lead' limit 1];
+                objPermisssions = [select id, PermissionsCreate from ObjectPermissions where ParentId = :systemAdminPermissionSetId and SobjectType = 'Lead' limit 1];
                 system.assert(objPermisssions[0].PermissionsCreate == true, 'Updated permissionsCreate permission exist');                
             }
         test.stopTest();        
