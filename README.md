@@ -1,7 +1,6 @@
 # Salesforce Field level (FLS) & Object level - permissions compare & sync 
 
-A free tool for Salesforce Admins by Asprire Bright LLC 
-Giving back a drop from the ocean of consumption
+A free tool for Salesforce Admins by Asprire Bright LLC
 
 [![Alt text](FLS_OLS_Compare_Sync.png)](https://youtu.be/AJLJWqwA5Vw)
 
