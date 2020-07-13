@@ -1,10 +1,10 @@
 # Salesforce Field level (FLS) & Object level - permissions compare & sync 
 
-A free tool for Salesforce Admins by Asprire Bright LLC
+A free tool for Salesforce Admins by [Aspire Bright LLC](https://www.aspirebright.com/)
 
 [![Alt text](FLS_OLS_Compare_Sync.png)](https://youtu.be/AJLJWqwA5Vw)
 
-## For installing this App on your Salesforce Org, please follow the below instructions.
+## For installing this app on your Salesforce Org, please follow the below instructions.
 
 Make sure to start from a brand-new salesforce project on vs code environment to avoid conflicts with previous work you may have done.
 
