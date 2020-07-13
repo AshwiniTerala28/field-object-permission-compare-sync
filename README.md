@@ -11,8 +11,8 @@ Make sure to start from a brand-new salesforce project on vs code environment to
 1. Clone this repository:
 
     ```
-    git clone https://github.com/AspireBrightLLcFreeToolbox/field-Object-permission-compare-sync
-    cd field-Object-permission-compare-sync
+    git clone https://github.com/aspirebright/field-object-permission-compare-sync.git
+    cd field-object-permission-compare-sync
     ```
 
 1. Authorize your Trailhead Playground or Developer org and provide it with an alias (**mydevorg** in the command below):
