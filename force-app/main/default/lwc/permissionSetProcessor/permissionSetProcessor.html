@@ -7,19 +7,15 @@
                     class="slds-p-around_small" placeholder="Select PermissionSet" options={permissionSetList}
                     onchange={handlePermissionSetChange}>
                 </lightning-combobox>
-                <lightning-combobox name="permissionType1" label="Permission Type 1" value={value}
+                <lightning-combobox name="permissionType" label="Permission Type" value={value}
                     class="slds-p-around_small" placeholder="Select Permission Type" options={permissionTypeList}
-                    onchange={handlePermissionTypeChange}>
+                    onchange={handlePermissionTypeChange} field-level-help="Subject to Apex/Soql limits">
                 </lightning-combobox>
             </div>
             <div class="slds-col slds-size_6-of-12">
                 <lightning-combobox name="permissionSet2" label="Permission Set 2" value={value}
                     class="slds-p-around_small" placeholder="Select PermissionSet" options={permissionSetList}
                     onchange={handlePermissionSetChange}>
-                </lightning-combobox>
-                <lightning-combobox name="permissionType2" label="Permission Type 2" value={value}
-                    class="slds-p-around_small" placeholder="Select Permission Type" options={permissionTypeList}
-                    onchange={handlePermissionTypeChange}>
                 </lightning-combobox>
             </div>
         </div>
@@ -63,10 +59,19 @@
                                 <div key={header.name} class={header.size}>
                                     <span class="header-span">
                                         <template if:true={header.isKeyField}>
-                                            <lightning-input data-id="left-search-input"
-                                                placeholder={header.placeHolder} variant="label-hidden" type="search"
-                                                onkeyup={handleSearching} onchange={handleSearching}>
-                                            </lightning-input>
+                                            <div class="slds-grid slds-grid_vertical-align-center">
+                                                <div class="slds-col slds-size_11-of-12">
+                                                    <lightning-input data-id="left-search-input"
+                                                        placeholder={header.placeHolder} variant="label-hidden"
+                                                        type="search" onkeyup={handleSearching} onchange={handleSearching}>
+                                                    </lightning-input>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-12 slds-p-left_xx-small">
+                                                    <lightning-helptext data-id="search-helptext"
+                                                        content="For large set of results (1000+), please consider not searching here and use browser level search instead.">
+                                                    </lightning-helptext>
+                                                </div>
+                                            </div>
                                         </template>
                                         <template if:false={header.isKeyField}>
                                             {header.name}
@@ -89,6 +94,9 @@
                                                 placeholder={header.placeHolder} variant="label-hidden" type="search"
                                                 onkeyup={handleSearching} onchange={handleSearching}>
                                             </lightning-input>
+                                            <lightning-helptext
+                                                content="For large set of results, please consider not searching here and use browser level search instead.">
+                                            </lightning-helptext>
                                         </template>
                                         <template if:false={header.isKeyField}>
                                             {header.name}
@@ -154,18 +162,21 @@
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="slds-dropdown__item" role="presentation" >
+                                    <li class="slds-dropdown__item" role="presentation">
 
                                         <fieldset class="slds-form-element">
                                             <div class="slds-form-element__control">
-                                                <div class="slds-radio_button-group slds-align_absolute-center switch-toggle-diff-both-match">
+                                                <div
+                                                    class="slds-radio_button-group slds-align_absolute-center switch-toggle-diff-both-match">
                                                     <template for:each={diffBothMatchOptions} for:item="option">
                                                         <span key={option.value} class="slds-button slds-radio_button">
-                                                            <input type="radio" name={option.groupName} value={option.value} 
-                                                               class="radio-diff-both-match" onchange={handleDiffBothMatchChange} />
-                                                            <label class="slds-radio_button__label" onclick={handleDiffBothMatchFocus}>
-                                                                <span class="slds-radio_faux">    
-                                                                    {option.value}                                                            
+                                                            <input type="radio" name={option.groupName}
+                                                                value={option.value} class="radio-diff-both-match"
+                                                                onchange={handleDiffBothMatchChange} />
+                                                            <label class="slds-radio_button__label"
+                                                                onclick={handleDiffBothMatchFocus}>
+                                                                <span class="slds-radio_faux">
+                                                                    {option.value}
                                                                 </span>
                                                             </label>
                                                         </span>

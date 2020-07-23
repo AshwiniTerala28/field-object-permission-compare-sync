@@ -60,13 +60,13 @@ public with sharing class PermissionSetProcessor{
                     if(dmlType==DML_TYPE_INSERT){
                         //insert fldPermissions;
                         Database.SaveResult[] saveResults = Database.insert(fldPermissions, false);
-                        String processedResults = processSaveResults(saveResults);
+                        String processedResults = processFieldPermissionSaveResults(saveResults, fldPermissions);
                         result.put(key + ' was successful.', processedResults);
                     }
                     if(dmlType==DML_TYPE_UPDATE){
                         //update fldPermissions;
                         Database.SaveResult[] saveResults = Database.update(fldPermissions, false);
-                        String processedResults = processSaveResults(saveResults);
+                        String processedResults = processFieldPermissionSaveResults(saveResults, fldPermissions);
                         result.put(key + ' was successful.', processedResults);
                     }
                 }
@@ -75,13 +75,13 @@ public with sharing class PermissionSetProcessor{
                     if(dmlType==DML_TYPE_INSERT){
                         //insert objPermissions;
                         Database.SaveResult[] saveResults = Database.insert(objPermissions, false);
-                        String processedResults = processSaveResults(saveResults);
+                        String processedResults = processObjectPermissionSaveResults(saveResults, objPermissions);
                         result.put(key + ' was successful.', processedResults);
                     }
                     if(dmlType==DML_TYPE_UPDATE){
                         //update objPermissions;
                         Database.SaveResult[] saveResults = Database.update(objPermissions, false);
-                        String processedResults = processSaveResults(saveResults);
+                        String processedResults = processObjectPermissionSaveResults(saveResults, objPermissions);
                         result.put(key + ' was successful.', processedResults);
                     }
                 }
@@ -94,21 +94,49 @@ public with sharing class PermissionSetProcessor{
         return result;
     }
 
-    public static string processSaveResults(Database.SaveResult[] result){
+    public static string processFieldPermissionSaveResults(Database.SaveResult[] result, List<FieldPermissions> fieldPermissions){
         String resultString = '';
         Integer successCounter = 0;
         Integer errorCounter = 0;
         String errorHtml = '';
-        for (Database.SaveResult sr : result) {
-            if (sr.isSuccess()) {
+        //for (Database.SaveResult sr : result) {
+        for(Integer i = 0; i < result.size(); i++){    
+            if (result[i].isSuccess()) {
                 successCounter += 1;
             }
             else {
                 errorCounter += 1;
                 // Operation failed, so get all errors   
-                String errorInnerHtml = '<br/>';             
-                for(Database.Error err : sr.getErrors()) {
-                    errorInnerHtml = errorInnerHtml + ' ' + err.getStatusCode() + ': ' + err.getMessage() + ' due to ' + err.getFields();
+                String errorInnerHtml = '<br/><b>' + string.valueof(i+1) + '. ' + fieldPermissions[i].Field + ': </b>';             
+                for(Database.Error err : result[i].getErrors()) {
+                    errorInnerHtml = errorInnerHtml + ' ' + err.getStatusCode() + '. ' + err.getMessage();
+                    errorHTML = errorHTML + errorInnerHtml;
+                }
+            }
+        }
+        errorHtml = errorHtml + '<br/>';
+        resultString = string.valueof(successCounter) + ' successful inserts. <br/>';
+        resultString = resultString + string.valueof(errorCounter) + ' insert errors. <br/>';
+        resultString = resultString + errorHtml;
+        return resultString;
+    }
+
+    public static string processObjectPermissionSaveResults(Database.SaveResult[] result, List<ObjectPermissions> objectPermissions){
+        String resultString = '';
+        Integer successCounter = 0;
+        Integer errorCounter = 0;
+        String errorHtml = '';
+        //for (Database.SaveResult sr : result) {
+        for(Integer i = 0; i < result.size(); i++){    
+            if (result[i].isSuccess()) {
+                successCounter += 1;
+            }
+            else {
+                errorCounter += 1;
+                // Operation failed, so get all errors   
+                String errorInnerHtml = '<br/><b>' + string.valueof(i+1) + '. ' + objectPermissions[i].SobjectType + ': </b>';             
+                for(Database.Error err : result[i].getErrors()) {
+                    errorInnerHtml = errorInnerHtml + ' ' + err.getStatusCode() + '. ' + err.getMessage();
                     errorHTML = errorHTML + errorInnerHtml;
                 }
             }
