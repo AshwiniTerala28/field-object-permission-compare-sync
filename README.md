@@ -2,7 +2,7 @@
 
 A free tool for Salesforce Admins by [Aspire Bright LLC](https://www.aspirebright.com/)
 
-[![Alt text](FLS_OLS_Compare_Sync.png)](https://youtu.be/AJLJWqwA5Vw)
+[![Alt text](FLS_OLS_Compare_Sync.png)](https://youtu.be/0mlPh3nftDI)
 
 ## For installing this app on your Salesforce Org, please follow the below instructions.
 
